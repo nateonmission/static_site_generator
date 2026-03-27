@@ -1,6 +1,6 @@
 import unittest
 from textnode import TextNode, TextTypes
-from textprocessing import split_nodes_delimiter, extract_markdown_images
+from textprocessing import split_nodes_delimiter, extract_markdown_images, split_nodes_image, split_nodes_link
 
 
 class TestSplitNodesDelimiter(unittest.TestCase):
@@ -127,3 +127,86 @@ class TestSplitNodesDelimiter(unittest.TestCase):
         text = "This is just plain text"
         matches =  extract_markdown_images(text)
         self.assertEqual(matches, [])
+        
+    def test_split_images(self):
+        node = TextNode(
+            "This is text with an ![image](https://i.imgur.com/zjjcJKZ.png) and another ![second image](https://i.imgur.com/3elNhQu.png)",
+            TextTypes.TEXT,
+        )
+        new_nodes = split_nodes_image([node])
+        self.assertListEqual(
+            [
+                TextNode("This is text with an ", TextTypes.TEXT),
+                TextNode("image", TextTypes.IMAGE, "https://i.imgur.com/zjjcJKZ.png"),
+                TextNode(" and another ", TextTypes.TEXT),
+                TextNode(
+                    "second image", TextTypes.IMAGE, "https://i.imgur.com/3elNhQu.png"
+                ),
+            ],
+            new_nodes,
+        )
+        
+    def test_split_images_no_images(self):
+        node = TextNode("This is just plain text", TextTypes.TEXT)
+        new_nodes = split_nodes_image([node])
+        self.assertListEqual(
+            [TextNode("This is just plain text", TextTypes.TEXT)],
+            new_nodes,
+        )
+
+    def test_split_images_at_edges(self):
+        node = TextNode(
+            "![start](https://example.com/start.png) middle ![end](https://example.com/end.png)",
+            TextTypes.TEXT,
+        )
+        new_nodes = split_nodes_image([node])
+        self.assertListEqual(
+            [
+                TextNode("start", TextTypes.IMAGE, "https://example.com/start.png"),
+                TextNode(" middle ", TextTypes.TEXT),
+                TextNode("end", TextTypes.IMAGE, "https://example.com/end.png"),
+            ],
+            new_nodes,
+        )
+
+
+    def test_split_links(self):
+        node = TextNode(
+            "This is text with an [link](https://i.imgur.com/zjjcJKZ.png) and another [second link](https://i.imgur.com/3elNhQu.png)",
+            TextTypes.TEXT,
+        )
+        new_nodes = split_nodes_link([node])
+        self.assertListEqual(
+            [
+                TextNode("This is text with an ", TextTypes.TEXT),
+                TextNode("link", TextTypes.LINK, "https://i.imgur.com/zjjcJKZ.png"),
+                TextNode(" and another ", TextTypes.TEXT),
+                TextNode(
+                    "second link", TextTypes.LINK, "https://i.imgur.com/3elNhQu.png"
+                ),
+            ],
+            new_nodes,
+        )
+        
+    def test_split_links_no_links(self):
+        node = TextNode("This is just plain text", TextTypes.TEXT)
+        new_nodes = split_nodes_link([node])
+        self.assertListEqual(
+            [TextNode("This is just plain text", TextTypes.TEXT)],
+            new_nodes,
+        )
+        
+    def test_split_links_at_edges(self):
+        node = TextNode(
+            "[start](https://example.com) middle [end](https://example.org)",
+            TextTypes.TEXT,
+        )
+        new_nodes = split_nodes_link([node])
+        self.assertListEqual(
+            [
+                TextNode("start", TextTypes.LINK, "https://example.com"),
+                TextNode(" middle ", TextTypes.TEXT),
+                TextNode("end", TextTypes.LINK, "https://example.org"),
+            ],
+            new_nodes,
+        )

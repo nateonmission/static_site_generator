@@ -3,6 +3,7 @@ from textnode import TextNode, TextTypes
 from leafnode import LeafNode
 from htmlnode import HTMLNode
 from parentnode import ParentNode
+from textprocessing import split_nodes_delimiter, split_nodes_image, split_nodes_link
 
 
 

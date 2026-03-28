@@ -24,7 +24,7 @@ def split_nodes_delimiter(old_nodes, delimiter, text_type):
                 match delimiter:
                     case "**":
                         new_nodes.append(TextNode(part, TextTypes.BOLD))
-                    case "*":
+                    case "_":
                         new_nodes.append(TextNode(part, TextTypes.ITALIC))
                     case "`":
                         new_nodes.append(TextNode(part, TextTypes.CODE))
@@ -42,10 +42,7 @@ def extract_markdown_links(text):
     matches = re.findall(r"\[(.*?)\]\((.*?)\)", text)
     return matches
     
-# text = "This is text with a ![rick roll](https://i.imgur.com/aKaOqIh.gif) and ![obi wan](https://i.imgur.com/fJRm4Vk.jpeg)"
-# extract_markdown_images(text)
- 
- #TODO   
+   
 def split_nodes_image(old_nodes):
     new_nodes = []
     for node in old_nodes:
@@ -61,14 +58,13 @@ def split_nodes_image(old_nodes):
                         alt_text, url = img_tuple[0]
                         new_nodes.append(TextNode(alt_text, TextTypes.IMAGE, url))
                 else:
-                    new_nodes.append(TextNode(string, TextTypes.TEXT))
+                    new_nodes.append(TextNode(string, node.text_type, node.url ))
 
     return new_nodes
         
 
 
 
-#TODO
 def split_nodes_link(old_nodes):
     new_nodes = []
     for node in old_nodes:
@@ -84,14 +80,21 @@ def split_nodes_link(old_nodes):
                         alt_text, url = img_tuple[0]
                         new_nodes.append(TextNode(alt_text, TextTypes.LINK, url))
                 else:
-                    new_nodes.append(TextNode(string, TextTypes.TEXT))
-
+                    new_nodes.append(TextNode(string, node.text_type,node.url))
     return new_nodes
 
 
-# node = TextNode(
-#     "This is text with a link ![to boot dev](https://www.boot.dev) and another ![to youtube](https://www.youtube.com/@bootdotdev), But that's the end",
-#     TextTypes.TEXT,
-# )
+def text_to_textnodes(text):
+    nodes = [TextNode(text, TextTypes.TEXT)]
 
-# new_nodes = split_nodes_links([node])
+    nodes = split_nodes_delimiter(nodes, "**", TextTypes.BOLD)
+    nodes = split_nodes_delimiter(nodes, "_", TextTypes.ITALIC)
+    nodes = split_nodes_delimiter(nodes, "`", TextTypes.CODE)
+    nodes = split_nodes_image(nodes)
+    nodes = split_nodes_link(nodes)
+
+    return nodes
+    
+    
+# text = "This is **text** with an _italic_ word and a `code block` and an ![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg) and a [link](https://boot.dev)"
+# print(text_to_textnodes(text))

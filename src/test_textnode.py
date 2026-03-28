@@ -11,7 +11,7 @@ class TestTextNode(unittest.TestCase):
         
     def test_repr(self):
         node = TextNode("This is a text node", TextTypes.BOLD, "https://www.example.com")
-        self.assertEqual(repr(node), "TextNode(This is a text node, TextTypes.BOLD, https://www.example.com)")
+        self.assertEqual(repr(node), "TextNode(\"This is a text node\", TextTypes.BOLD, \"https://www.example.com\")")
         
     def test_inequality(self):
         node = TextNode("This is a text node", TextTypes.BOLD, "https://www.example.com")

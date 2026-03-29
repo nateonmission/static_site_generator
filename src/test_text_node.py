@@ -1,7 +1,7 @@
 import unittest
 
-from main import text_node_to_html_node
-from textnode import TextNode, TextTypes
+# from main import text_node_to_html_node
+from textnode import TextNode, TextTypes, text_node_to_html_node
 from htmlnode import HTMLNode
 from leafnode import LeafNode
 from parentnode import ParentNode

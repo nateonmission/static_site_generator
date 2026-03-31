@@ -44,7 +44,7 @@ def extract_title(markdown):
     raise ValueError("No title found in markdown content.")
 
 
-def generate_page(from_path, template_path, dest_path, basepath="/"):
+def generate_page(from_path, template_path, dest_path, basepath=""):
     print(f"Generating page from {from_path} using template {template_path} to {dest_path}")
 
     with open(from_path, "r") as f:
@@ -62,8 +62,8 @@ def generate_page(from_path, template_path, dest_path, basepath="/"):
 
     template_content = template_content.replace("{{ Title }}", title)
     template_content = template_content.replace("{{ Content }}", new_html)
-    template_content = template_content.replace('href="/', f'href="{basepath}')
-    template_content = template_content.replace('src="/', f'src="{basepath}')
+    template_content = template_content.replace('href="/', f'href="{basepath}/')
+    template_content = template_content.replace('src="/', f'src="{basepath}/')
 
     os.makedirs(os.path.dirname(dest_path), exist_ok=True)
     
@@ -72,7 +72,7 @@ def generate_page(from_path, template_path, dest_path, basepath="/"):
 
 
 
-def update_site(source_dir, dest_dir, template_path, basepath="/"):
+def update_site(source_dir, dest_dir, template_path, basepath=""):
     for item in os.listdir(source_dir):
         source_path = os.path.join(source_dir, item)
         dest_path = os.path.join(dest_dir, item)
@@ -80,7 +80,7 @@ def update_site(source_dir, dest_dir, template_path, basepath="/"):
         if os.path.isdir(source_path):
             print(f"Processing file: {source_path}")
             os.makedirs(dest_path, exist_ok=True)
-            update_site(os.path.join(source_dir, item), os.path.join(dest_dir, item), template_path)
+            update_site(os.path.join(source_dir, item), os.path.join(dest_dir, item), template_path, basepath)
             print(f"Generated content in: {dest_path}")
         else:
             print(f"Processing file: {source_path}")
@@ -90,7 +90,8 @@ def update_site(source_dir, dest_dir, template_path, basepath="/"):
 
 
 def main(*args):
-    basepath = sys.argv[1] if len(sys.argv) > 1 else "/"
+    basepath = sys.argv[1] if len(sys.argv) > 1 else ""
+    print(f"{basepath = }")
     base_dir = os.getcwd()
     static_source_dir = os.path.join(base_dir, "static")
     content_source_dir = os.path.join(base_dir, "content")

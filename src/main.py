@@ -84,7 +84,7 @@ def update_site(source_dir, dest_dir, template_path, basepath=""):
             print(f"Generated content in: {dest_path}")
         else:
             print(f"Processing file: {source_path}")
-            generate_page(source_path, template_path, dest_path)
+            generate_page(source_path, template_path, dest_path, basepath)
             print(f"Generated content in: {dest_path}")
 
 

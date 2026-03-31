@@ -62,8 +62,8 @@ def generate_page(from_path, template_path, dest_path, basepath="/"):
 
     template_content = template_content.replace("{{ Title }}", title)
     template_content = template_content.replace("{{ Content }}", new_html)
-    template_content = template_content.replace('href="/', f'href="{basepath}"')
-    template_content = template_content.replace('src="/', f'src="{basepath}"')
+    template_content = template_content.replace('href="/', f'href="{basepath}')
+    template_content = template_content.replace('src="/', f'src="{basepath}')
 
     os.makedirs(os.path.dirname(dest_path), exist_ok=True)
     

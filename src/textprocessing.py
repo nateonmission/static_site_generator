@@ -160,6 +160,12 @@ def blocks_to_BlockNodes(blocks_list):
             list_items = [f"<li>{item[2:].strip()}</li>" for item in list_items]
             block_node = f"<{block_tag}>" + "".join(list_items) + f"</{block_tag}>"
             block_nodes.append(block_node)
+        elif block_type == BlockTypes.QUOTE:
+            quote_lines = block.split("\n")
+            quote_lines = [line.strip()[1:].strip() for line in quote_lines if line.strip() != ""]
+            quote_text = " ".join(quote_lines)
+            block_node = f"<{block_tag}>{quote_text}</{block_tag}>"
+            block_nodes.append(block_node)
         elif block_tag == "code":
             if "\n" not in block:
                 code_text = block[3:-3]

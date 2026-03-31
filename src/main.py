@@ -90,6 +90,8 @@ def update_site(source_dir, dest_dir, template_path, basepath=""):
 
 
 def main(*args):
+    for arg in sys.argv:
+        print(f"Argument: {arg}")
     basepath = sys.argv[1] if len(sys.argv) > 1 else ""
     print(f"{basepath = }")
     base_dir = os.getcwd()

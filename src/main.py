@@ -102,6 +102,6 @@ def main(*args):
     update_site(content_source_dir, dest_dir, template_path)
     print("Site generation complete.")
 
-
+# Main
 if __name__ == "__main__":
     main()

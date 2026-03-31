@@ -1,4 +1,5 @@
 import os
+import sys
 import shutil
 
 from textnode import TextNode, TextTypes
@@ -43,7 +44,7 @@ def extract_title(markdown):
     raise ValueError("No title found in markdown content.")
 
 
-def generate_page(from_path, template_path, dest_path):
+def generate_page(from_path, template_path, dest_path, basepath="/"):
     print(f"Generating page from {from_path} using template {template_path} to {dest_path}")
 
     with open(from_path, "r") as f:
@@ -61,6 +62,8 @@ def generate_page(from_path, template_path, dest_path):
 
     template_content = template_content.replace("{{ Title }}", title)
     template_content = template_content.replace("{{ Content }}", new_html)
+    template_content = template_content.replace('href="/', f'href="{basepath}"')
+    template_content = template_content.replace('src="/', f'src="{basepath}"')
 
     os.makedirs(os.path.dirname(dest_path), exist_ok=True)
     
@@ -69,7 +72,7 @@ def generate_page(from_path, template_path, dest_path):
 
 
 
-def update_site(source_dir, dest_dir, template_path):
+def update_site(source_dir, dest_dir, template_path, basepath="/"):
     for item in os.listdir(source_dir):
         source_path = os.path.join(source_dir, item)
         dest_path = os.path.join(dest_dir, item)
@@ -86,14 +89,15 @@ def update_site(source_dir, dest_dir, template_path):
 
 
 
-def main():
+def main(*args):
+    basepath = sys.argv[1] if len(sys.argv) > 1 else "/"
     base_dir = os.getcwd()
-    source_dir = os.path.join(base_dir, "static")
+    static_source_dir = os.path.join(base_dir, "static")
     content_source_dir = os.path.join(base_dir, "content")
-    dest_dir = os.path.join(base_dir, "public")
+    dest_dir = os.path.join(base_dir, "docs")
     template_path = os.path.join(base_dir, "src", "template.html")
 
-    move_content_tree(source_dir, dest_dir)
+    move_content_tree(static_source_dir, dest_dir)
 
     update_site(content_source_dir, dest_dir, template_path)
     print("Site generation complete.")

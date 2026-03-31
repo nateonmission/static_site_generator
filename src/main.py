@@ -99,7 +99,7 @@ def main(*args):
 
     move_content_tree(static_source_dir, dest_dir)
 
-    update_site(content_source_dir, dest_dir, template_path)
+    update_site(content_source_dir, dest_dir, template_path, basepath)
     print("Site generation complete.")
 
 # Main
